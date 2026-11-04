@@ -28,10 +28,6 @@
 		<string>group.aoshuang.manicemu</string>
 	</array>
 	<!-- TrollStore 永久 JIT 所需的完整 entitlements（整份替换，不含 iCloud 各项） -->
-	<key>com.apple.private.security.no-container</key>
-	<true/>
-	<key>com.apple.private.security.no-sandbox</key>
-	<true/>
 	<key>platform-application</key>
 	<true/>
 	<key>get-task-allow</key>
