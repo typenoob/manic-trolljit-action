@@ -33,7 +33,6 @@ LDID_VERSION="v2.1.5-procursus7"
 LDID_ASSET="${LDID_ASSET:-ldid_linux_x86_64}"
 LDID_NAME="${LDID_NAME:-ldid}"
 LDID_URL="https://github.com/ProcursusTeam/ldid/releases/download/${LDID_VERSION}/${LDID_ASSET}"
-LIEF_VERSION="0.16.7"
 JIT_DYLIB_NAME="TrollStoreJITEnabler.dylib"
 DYLIB_INSTALL_PATH="@executable_path/Frameworks/${JIT_DYLIB_NAME}"
 
@@ -43,11 +42,8 @@ command -v unzip >/dev/null || die "需要 unzip"
 PYTHON_BIN="${PYTHON_BIN:-python3}"
 command -v "$PYTHON_BIN" >/dev/null || PYTHON_BIN=python
 command -v "$PYTHON_BIN" >/dev/null || die "需要 python3 或 python"
-"$PYTHON_BIN" -c 'import lief' 2>/dev/null \
-  || { log "安装 LIEF==${LIEF_VERSION}（Mach-O 编辑库）"
-       "$PYTHON_BIN" -m pip install --quiet "lief==${LIEF_VERSION}" \
-         || "$PYTHON_BIN" -m pip install --quiet --break-system-packages "lief==${LIEF_VERSION}" \
-         || die "LIEF 安装失败"; }
+# 注入器为纯 Python 实现（无第三方依赖），仅需标准库
+"$PYTHON_BIN" -c 'import struct, plistlib, zipfile' || die "python 标准库不完整"
 
 # ---------- 准备目录与工具 ----------
 rm -rf "$WORK_DIR"
