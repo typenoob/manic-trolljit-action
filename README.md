@@ -26,7 +26,7 @@ ManicEMU.v2.0.2.TrollStoreJIT.ipa
    - `get-task-allow = true`
    - `com.apple.private.memorystatus = true`
    - `com.apple.security.iokit-user-client-class` = AGX 5 项（AGXDeviceUserClient / V1 / V2 / V3 / AGXSharedUserClient）
-3. **注入 JIT Enabler**：下载 [Rednick16/TrollStoreJITEnabler](https://github.com/Rednick16/TrollStoreJITEnabler) 预编译 dylib（v1.1.0）放入 `Frameworks/`，向主二进制注入 `LC_LOAD_DYLIB` 加载命令（基于 [LIEF](https://github.com/lief-project/LIEF) 纯 Python Mach-O 编辑，支持 fat 二进制，Linux 可跑）。
+3. **注入 JIT Enabler**：下载 [Rednick16/TrollStoreJITEnabler](https://github.com/Rednick16/TrollStoreJITEnabler) 预编译 dylib（v1.1.0）放入 `Frameworks/`，向主二进制注入 `LC_LOAD_DYLIB` 加载命令（纯 Python 实现的 Mach-O 编辑器，零第三方依赖，支持 thin / fat 二进制，Linux 可跑）。
 4. **重签与清理**：`ldid` 对主二进制（含 entitlements）与 dylib 重新 ad-hoc 签名；删除 `embedded.mobileprovision`（TrollStore 忽略签名，保留反而可能引起 entitlements 冲突）。
 5. **重新打包** zip 为 `*.TrollStoreJIT.ipa` 并上传 Artifact。
 
@@ -72,17 +72,35 @@ export IPA_URL="https://github.com/Manic-EMU/ManicEMU/releases/download/v2.0.2/M
 # 产物位于 ./output/
 ```
 
-依赖：`curl`、`unzip`、`zip`、`python3` + `lief==0.14.1`（脚本会自动 pip 安装）；`ldid`（自动下载 ProcursusTeam 静态二进制）。
+依赖：`curl`、`unzip`、`python3`（仅标准库，无需 pip 安装任何包）；`ldid` 由脚本自动下载 ProcursusTeam 静态二进制。
+
+可用环境变量覆盖（离线/镜像场景）：
+
+| 变量 | 说明 |
+| --- | --- |
+| `LDID_URL` | ldid 二进制下载地址，可指向本地文件 `file:///path/to/ldid` |
+| `DYLIB_URL` | 同上，可指向本地 dylib |
+| `WORK_DIR` / `OUT_DIR` | 工作目录 / 产物目录，默认 `./build`、`./output` |
+
+## 测试
+
+注入器有纯 stdlib 的自检用例（合成 Mach-O 夹具，覆盖 thin / fat / 幂等 / 头部空间不足）：
+
+```bash
+python3 tests/test_inject.py
+```
 
 ## 目录结构
 
 ```
 ├── action.yml                    # composite action
 ├── .github/workflows/build.yml   # workflow_dispatch 手动触发入口
-└── scripts/
-    ├── repkg.sh                  # 核心改包脚本
-    ├── inject.py                 # LC_LOAD_DYLIB 注入（LIEF）
-    └── entitlements.plist        # TrollStore 永久 JIT entitlements 模板
+├── scripts/
+│   ├── repkg.sh                  # 核心改包脚本
+│   ├── inject.py                 # LC_LOAD_DYLIB 注入（纯 Python，无依赖）
+│   └── entitlements.plist        # TrollStore 永久 JIT entitlements 模板
+└── tests/
+    └── test_inject.py            # 注入器自检
 ```
 
 ## 说明

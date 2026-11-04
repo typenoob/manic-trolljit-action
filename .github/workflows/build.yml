@@ -22,6 +22,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: 自检注入器
+        run: python3 tests/test_inject.py
+
       - uses: ./
         with:
           ipa_url: ${{ inputs.ipa_url }}

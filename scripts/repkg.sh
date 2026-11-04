@@ -32,7 +32,8 @@ LDID_VERSION="v2.1.5-procursus7"
 #   LDID_ASSET=ldid_w64_x86_64.exe LDID_NAME=ldid.exe
 LDID_ASSET="${LDID_ASSET:-ldid_linux_x86_64}"
 LDID_NAME="${LDID_NAME:-ldid}"
-LDID_URL="https://github.com/ProcursusTeam/ldid/releases/download/${LDID_VERSION}/${LDID_ASSET}"
+# 可用 LDID_URL 覆盖（镜像/离线测试），例如 file:///tmp/ldid
+LDID_URL="${LDID_URL:-https://github.com/ProcursusTeam/ldid/releases/download/${LDID_VERSION}/${LDID_ASSET}}"
 JIT_DYLIB_NAME="TrollStoreJITEnabler.dylib"
 DYLIB_INSTALL_PATH="@executable_path/Frameworks/${JIT_DYLIB_NAME}"
 
