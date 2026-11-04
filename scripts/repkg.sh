@@ -33,7 +33,7 @@ LDID_VERSION="v2.1.5-procursus7"
 LDID_ASSET="${LDID_ASSET:-ldid_linux_x86_64}"
 LDID_NAME="${LDID_NAME:-ldid}"
 LDID_URL="https://github.com/ProcursusTeam/ldid/releases/download/${LDID_VERSION}/${LDID_ASSET}"
-LIEF_VERSION="0.14.1"
+LIEF_VERSION="0.16.7"
 JIT_DYLIB_NAME="TrollStoreJITEnabler.dylib"
 DYLIB_INSTALL_PATH="@executable_path/Frameworks/${JIT_DYLIB_NAME}"
 

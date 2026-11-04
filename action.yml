@@ -40,7 +40,8 @@ runs:
         DYLIB_URL: ${{ inputs.dylib_url }}
         OUTPUT_NAME: ${{ inputs.output_name }}
         IPA_SHA256: ${{ inputs.ipa_sha256 }}
-      run: ${{ github.action_path }}/scripts/repkg.sh
+      # 用 bash 显式调用，避免文件在仓库中缺少可执行位（Windows 提交）导致 exit 126
+      run: bash "${{ github.action_path }}/scripts/repkg.sh"
 
     - name: Upload artifact
       if: inputs.upload_artifact == 'true'
