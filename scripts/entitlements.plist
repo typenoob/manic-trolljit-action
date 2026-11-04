@@ -11,7 +11,9 @@
 	<true/>
 	<key>get-task-allow</key>
 	<true/>
-	<key>com.apple.private.memorystatus</key>
+    <key>com.apple.private.security.storage.AppDataContainers</key>
+	<true/>
+    <key>com.apple.private.memorystatus</key>
 	<true/>
 	<key>com.apple.security.iokit-user-client-class</key>
 	<array>
