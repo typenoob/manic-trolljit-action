@@ -1,0 +1,51 @@
+name: 'TrollStore JIT Repack'
+description: >-
+  把 SideloadJIT 版 ipa 改包为 TrollStore 永久 JIT 版：
+  ldid 整份替换 entitlements + 注入 TrollStoreJITEnabler.dylib
+inputs:
+  ipa_url:
+    description: '输入 SideloadJIT ipa 的下载 URL'
+    required: true
+  dylib_url:
+    description: 'TrollStoreJITEnabler.dylib 下载地址'
+    required: false
+    default: 'https://github.com/Rednick16/TrollStoreJITEnabler/releases/download/1.1.0/TrollStoreJITEnabler.dylib'
+  output_name:
+    description: '输出 ipa 文件名；留空则从 URL 推导（SideloadJIT -> TrollStoreJIT）'
+    required: false
+    default: ''
+  ipa_sha256:
+    description: '可选：输入 ipa 的 sha256 校验值'
+    required: false
+    default: ''
+  upload_artifact:
+    description: '是否上传 Artifact（true/false）'
+    required: false
+    default: 'true'
+outputs:
+  ipa_path:
+    description: '生成的 ipa 文件路径'
+    value: ${{ steps.repkg.outputs.ipa_path }}
+  ipa_name:
+    description: '生成的 ipa 文件名'
+    value: ${{ steps.repkg.outputs.ipa_name }}
+
+runs:
+  using: composite
+  steps:
+    - id: repkg
+      shell: bash
+      env:
+        IPA_URL: ${{ inputs.ipa_url }}
+        DYLIB_URL: ${{ inputs.dylib_url }}
+        OUTPUT_NAME: ${{ inputs.output_name }}
+        IPA_SHA256: ${{ inputs.ipa_sha256 }}
+      run: ${{ github.action_path }}/scripts/repkg.sh
+
+    - name: Upload artifact
+      if: inputs.upload_artifact == 'true'
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ steps.repkg.outputs.ipa_name }}
+        path: ${{ steps.repkg.outputs.ipa_path }}
+        if-no-files-found: error

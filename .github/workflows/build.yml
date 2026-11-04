@@ -1,0 +1,29 @@
+name: Build TrollStore JIT IPA
+
+on:
+  workflow_dispatch:
+    inputs:
+      ipa_url:
+        description: 'SideloadJIT ipa 下载 URL'
+        required: true
+        default: 'https://github.com/Manic-EMU/ManicEMU/releases/download/v2.0.2/ManicEMU.v2.0.2.SideloadJIT.ipa'
+      output_name:
+        description: '输出文件名（留空自动从 URL 推导）'
+        required: false
+        default: ''
+      ipa_sha256:
+        description: '可选 sha256 校验值'
+        required: false
+        default: ''
+
+jobs:
+  repack:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: ./
+        with:
+          ipa_url: ${{ inputs.ipa_url }}
+          output_name: ${{ inputs.output_name }}
+          ipa_sha256: ${{ inputs.ipa_sha256 }}
